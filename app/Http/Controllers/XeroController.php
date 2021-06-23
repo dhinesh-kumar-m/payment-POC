@@ -25,11 +25,14 @@ class XeroController extends Controller
     {
         // Step 2 - Capture the response from Xero, and obtain an access token.
         $accessToken = $this->getOAuth2()->getAccessTokenFromXeroRequest($request);
-        // dd($accessToken);
         
         // Step 3 - Retrieve the list of tenants (typically Xero organisations), and let the user select one.
         $tenants = $this->getOAuth2()->getTenants($accessToken);
         $selectedTenant = $tenants[0]; // For example purposes, we're pretending the user selected the first tenant.
+
+        dd($accessToken);
+        dd(json_encode($accessToken));
+        dd($selectedTenant->tenantId);
 
         // Step 4 - Store the access token and selected tenant ID against the user's account for future use.
         // You can store these anyway you wish. For this example, we're storing them in the database using Eloquent.
