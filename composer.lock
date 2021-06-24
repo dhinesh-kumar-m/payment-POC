@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "47ebfec9ae6cab9d9af34fd72755c8e8",
+    "content-hash": "ca2cb454c0deaeebb35966b8567721da",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -5160,6 +5160,66 @@
                 "source": "https://github.com/webmozarts/assert/tree/1.10.0"
             },
             "time": "2021-03-09T10:59:23+00:00"
+        },
+        {
+            "name": "xeroapi/xero-php-oauth2",
+            "version": "2.6.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/XeroAPI/xero-php-oauth2.git",
+                "reference": "b2fa507314f9388c2212cd564c9ec411ababc8e8"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/XeroAPI/xero-php-oauth2/zipball/b2fa507314f9388c2212cd564c9ec411ababc8e8",
+                "reference": "b2fa507314f9388c2212cd564c9ec411ababc8e8",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "ext-json": "*",
+                "ext-mbstring": "*",
+                "firebase/php-jwt": "^5.0",
+                "guzzlehttp/guzzle": "^6.2 | ^7.0",
+                "league/oauth2-client": "^2.5.0",
+                "php": ">=5.6"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "~2.12",
+                "phpunit/phpunit": "^4.8",
+                "squizlabs/php_codesniffer": "~2.6"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "XeroAPI\\XeroPHP\\": "lib/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Xero API Team",
+                    "homepage": "https://developer.xero.com"
+                }
+            ],
+            "description": "Xero official PHP SDK for oAuth2 generated with OpenAPI spec 3",
+            "homepage": "https://github.com/xeroapi/xero-php-oauth2",
+            "keywords": [
+                "api",
+                "openapispec",
+                "php",
+                "rest",
+                "sdk",
+                "xero"
+            ],
+            "support": {
+                "issues": "https://github.com/XeroAPI/xero-php-oauth2/issues",
+                "source": "https://github.com/XeroAPI/xero-php-oauth2/tree/2.6.0"
+            },
+            "time": "2021-06-01T21:04:37+00:00"
         }
     ],
     "packages-dev": [

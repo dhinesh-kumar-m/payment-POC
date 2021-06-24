@@ -12,7 +12,8 @@
         "guzzlehttp/guzzle": "^7.0.1",
         "langleyfoxall/xero-laravel": "^3.1",
         "laravel/framework": "^8.40",
-        "laravel/tinker": "^2.5"
+        "laravel/tinker": "^2.5",
+        "xeroapi/xero-php-oauth2": "^2.6"
     },
     "require-dev": {
         "facade/ignition": "^2.5",

@@ -1,10 +1,23 @@
 <?php
 
+
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use LangleyFoxall\XeroLaravel\OAuth2;
 use League\OAuth2\Client\Token\AccessToken;
+use XeroAPI\XeroPHP\Configuration;
+use XeroAPI\XeroPHP\Api\AccountingApi;
+use GuzzleHttp\Client;
+use DateTime;
+use XeroAPI\XeroPHP\Models\Accounting\Contact;
+use XeroAPI\XeroPHP\Models\Accounting\Contacts;
+use XeroAPI\XeroPHP\Models\Accounting\LineItemTracking;
+use XeroAPI\XeroPHP\Models\Accounting\LineItem;
+use XeroAPI\XeroPHP\Models\Accounting\Invoice;
+use XeroAPI\XeroPHP\Models\Accounting\Invoices;
+use XeroAPI\XeroPHP\Models\Accounting\Phone;
+use XeroAPI\XeroPHP\Models\Accounting\TrackingCategory;
 
 class XeroController extends Controller
 {
@@ -30,16 +43,35 @@ class XeroController extends Controller
         $tenants = $this->getOAuth2()->getTenants($accessToken);
         $selectedTenant = $tenants[0]; // For example purposes, we're pretending the user selected the first tenant.
 
-        dd($accessToken);
-        dd(json_encode($accessToken));
-        dd($selectedTenant->tenantId);
+        // dd($accessToken);
+        // dd(json_encode($accessToken));
+        // dd($selectedTenant->tenantId);
 
         // Step 4 - Store the access token and selected tenant ID against the user's account for future use.
         // You can store these anyway you wish. For this example, we're storing them in the database using Eloquent.
-        $user = auth()->user();
-        $user->xero_access_token = json_encode($accessToken);
-        $user->tenant_id = $selectedTenant->tenantId;
-        $user->save();
+        // $user = auth()->user();
+        // $user->xero_access_token = json_encode($accessToken);
+        // $user->tenant_id = $selectedTenant->tenantId;
+        // $user->save();
+
+        $config = Configuration::getDefaultConfiguration()->setAccessToken( $accessToken );       
+
+        $apiInstance = new AccountingApi(
+            new Client(),
+            $config
+        );
+        $xeroTenantId = $selectedTenant->tenantId;
+        $invoiceID = "c52f2b26-d6a9-423e-b929-ffade18c656d";
+
+        try {
+        $result = $apiInstance->getInvoiceAsPdf($xeroTenantId, $invoiceID);
+        print_r($result);
+        exit();
+        
+        } catch (Exception $e) {
+        echo 'Exception when calling AccountingApi->getInvoiceAsPdf: ', $e->getMessage(), PHP_EOL;
+        }
+
     }
 
     public function refreshAccessTokenIfNecessary()
