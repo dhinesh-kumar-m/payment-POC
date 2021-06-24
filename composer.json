@@ -13,6 +13,7 @@
         "langleyfoxall/xero-laravel": "^3.1",
         "laravel/framework": "^8.40",
         "laravel/tinker": "^2.5",
+        "tymon/jwt-auth": "^1.0",
         "xeroapi/xero-php-oauth2": "^2.6"
     },
     "require-dev": {

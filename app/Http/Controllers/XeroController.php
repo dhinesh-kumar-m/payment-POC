@@ -44,7 +44,7 @@ class XeroController extends Controller
         $selectedTenant = $tenants[0]; // For example purposes, we're pretending the user selected the first tenant.
 
         // dd($accessToken);
-        // dd(json_encode($accessToken));
+        // dd(json_encode($accessToken)."_________".$selectedTenant->tenantId);
         // dd($selectedTenant->tenantId);
 
         // Step 4 - Store the access token and selected tenant ID against the user's account for future use.
@@ -53,24 +53,6 @@ class XeroController extends Controller
         // $user->xero_access_token = json_encode($accessToken);
         // $user->tenant_id = $selectedTenant->tenantId;
         // $user->save();
-
-        $config = Configuration::getDefaultConfiguration()->setAccessToken( $accessToken );       
-
-        $apiInstance = new AccountingApi(
-            new Client(),
-            $config
-        );
-        $xeroTenantId = $selectedTenant->tenantId;
-        $invoiceID = "c52f2b26-d6a9-423e-b929-ffade18c656d";
-
-        try {
-        $result = $apiInstance->getInvoiceAsPdf($xeroTenantId, $invoiceID);
-        print_r($result);
-        exit();
-        
-        } catch (Exception $e) {
-        echo 'Exception when calling AccountingApi->getInvoiceAsPdf: ', $e->getMessage(), PHP_EOL;
-        }
 
     }
 
@@ -87,4 +69,111 @@ class XeroController extends Controller
             $user->save();
         }
     }
+    public function testapi()
+    {
+        $user = auth()->user();
+        // $user->first_name="dhinesh";
+        // $user->last_name="kumar";
+        // $user->save();
+        print_r($user);
+        exit();
+    }
+
+    public function create_contact(Request $request)
+    {
+        $user = auth()->user();
+        $accessToken= $user->xero_access_token;
+        $tenantId= $user->tenant_id;
+
+        $config = Configuration::getDefaultConfiguration()->setAccessToken( $accessToken );       
+
+        $apiInstance = new AccountingApi(
+            new Client(),
+            $config
+        );
+        $xeroTenantId = $tenantId;
+        $summarizeErrors = false;
+
+        $phone = new Phone;
+        $phone->setPhoneNumber('3214567890');
+        $phone->setPhoneType(Phone::PHONE_TYPE_MOBILE);
+        $phones = [];
+        array_push($phones, $phone);
+
+        $contact = new Contact;
+        $contact->setName('Balaji');
+        $contact->setEmailAddress('Balaji@avengers.com');
+        $contact->setPhones($phones);
+
+        $contacts = new Contacts;
+        $arr_contacts = [];
+        array_push($arr_contacts, $contact);
+        $contacts->setContacts($arr_contacts);
+
+        try {
+        $result = $apiInstance->createContacts($xeroTenantId, $contacts, $summarizeErrors);
+        return $this->successResponse($result, "Contact created Successfully", 200);
+        } catch (Exception $e) {
+        echo 'Exception when calling AccountingApi->createContacts: ', $e->getMessage(), PHP_EOL;
+        }
+    }
+
+    public function create_invoice(Request $request){
+        $user = auth()->user();
+        $accessToken= $user->xero_access_token;
+        $tenantId= $user->tenant_id;
+
+        $config = Configuration::getDefaultConfiguration()->setAccessToken( $accessToken );       
+
+        $apiInstance = new AccountingApi(
+            new Client(),
+            $config
+        );
+        $xeroTenantId = $tenantId;
+        $summarizeErrors = false;
+        $unitdp = 4;
+        $dateValue = new DateTime('2021-06-24');
+        $dueDateValue = new DateTime('2021-06-28');
+
+        $contact = new Contact;
+        $contact->setContactID('fd6abc69-f296-4c36-af90-6af4507e9a8d');
+
+        $lineItemTracking = new LineItemTracking;
+        $lineItemTracking->setTrackingCategoryID('00000000-0000-0000-0000-000000000000');
+        $lineItemTracking->setTrackingOptionID('00000000-0000-0000-0000-000000000000');
+        $lineItemTrackings = [];
+        array_push($lineItemTrackings, $lineItemTracking);
+        
+
+        $lineItem = new LineItem;
+        $lineItem->setDescription('Foobar');
+        $lineItem->setQuantity(1.0);
+        $lineItem->setUnitAmount(12345.0);
+        $lineItem->setAccountCode('000');
+        $lineItem->setTracking($lineItemTrackings);
+        $lineItems = [];
+        array_push($lineItems, $lineItem);
+
+        $invoice = new Invoice;
+        $invoice->setType(Invoice::TYPE_ACCREC);
+        $invoice->setContact($contact);
+        $invoice->setDate($dateValue);
+        $invoice->setDueDate($dueDateValue);
+        $invoice->setLineItems($lineItems);
+        $invoice->setReference('Website Design');
+        $invoice->setStatus(Invoice::STATUS_DRAFT);
+
+        $invoices = new Invoices;
+        $arr_invoices = [];
+        array_push($arr_invoices, $invoice);
+        $invoices->setInvoices($arr_invoices);
+
+        try {
+        $result = $apiInstance->createInvoices($xeroTenantId, $invoices, $summarizeErrors, $unitdp);
+        return $this->successResponse($result, "Invoice created Successfully", 200);
+        } catch (Exception $e) {
+        echo 'Exception when calling AccountingApi->createInvoices: ', $e->getMessage(), PHP_EOL;
+        }
+    }
+
 }
