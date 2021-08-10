@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\XeroController;
 use App\Http\Controllers\JWTController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\XeroDefault;
 
 /*
 |--------------------------------------------------------------------------
@@ -39,6 +40,7 @@ Route::group(['middleware' => ['JwtMiddleWare']], function () {
     Route::get('create_contact', [XeroController::class, 'create_contact']);
     Route::get('create_invoice', [XeroController::class, 'create_invoice']);
     Route::get('hello/refresh', [XeroController::class, 'refreshAccessTokenIfNecessary']);
+    Route::get('hello/account', [XeroDefault::class, 'create_Account']);
 
     // Route::get('hello/callback', [XeroController::class, 'handleCallbackFromXero']);
 

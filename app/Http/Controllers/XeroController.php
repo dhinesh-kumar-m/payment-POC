@@ -125,7 +125,8 @@ class XeroController extends Controller
         $result = $apiInstance->createContacts($xeroTenantId, $contacts, $summarizeErrors);
         return $this->successResponse($result, "Contact created Successfully", 200);
         } catch (Exception $e) {
-        echo 'Exception when calling AccountingApi->createContacts: ', $e->getMessage(), PHP_EOL;
+            $errorMessage = 'Something Wrong';
+			return $this->errorResponse($errorMessage, 400);
         }
     }
 
