@@ -38,6 +38,9 @@ Route::group(['middleware' => ['JwtMiddleWare']], function () {
     Route::get('test', [XeroController::class, 'testapi']);
     Route::get('create_contact', [XeroController::class, 'create_contact']);
     Route::get('create_invoice', [XeroController::class, 'create_invoice']);
+    Route::get('hello/refresh', [XeroController::class, 'refreshAccessTokenIfNecessary']);
+
+    // Route::get('hello/callback', [XeroController::class, 'handleCallbackFromXero']);
 
 });
 

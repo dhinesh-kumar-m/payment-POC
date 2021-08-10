@@ -18,6 +18,8 @@ use XeroAPI\XeroPHP\Models\Accounting\Invoice;
 use XeroAPI\XeroPHP\Models\Accounting\Invoices;
 use XeroAPI\XeroPHP\Models\Accounting\Phone;
 use XeroAPI\XeroPHP\Models\Accounting\TrackingCategory;
+use App\Models\UserMaster;
+use Illuminate\Support\Facades\Log;
 
 class XeroController extends Controller
 {
@@ -44,15 +46,18 @@ class XeroController extends Controller
         $selectedTenant = $tenants[0]; // For example purposes, we're pretending the user selected the first tenant.
 
         // dd($accessToken);
-        // dd(json_encode($accessToken)."_________".$selectedTenant->tenantId);
+        // $json=json_encode($accessToken);
+        // dd(json_decode($json, true));
         // dd($selectedTenant->tenantId);
 
         // Step 4 - Store the access token and selected tenant ID against the user's account for future use.
         // You can store these anyway you wish. For this example, we're storing them in the database using Eloquent.
-        // $user = auth()->user();
-        // $user->xero_access_token = json_encode($accessToken);
-        // $user->tenant_id = $selectedTenant->tenantId;
-        // $user->save();
+        $user = UserMaster::find(1);
+        $user->xero_access_token = json_encode($accessToken);
+        $user->tenant_id = $selectedTenant->tenantId;
+        $user->save();
+        $successMessage="Xero is Connected Successfully";
+        return $this->successResponse($user, $successMessage, 200);
 
     }
 
@@ -60,14 +65,20 @@ class XeroController extends Controller
     {
         // Step 5 - Before using the access token, check if it has expired and refresh it if necessary.
         $user = auth()->user();
-        $accessToken = new AccessToken(json_decode($user->xero_access_token));
+        // dd(json_decode($user->xero_access_token,true));
+        $accessToken = new AccessToken(json_decode($user->xero_access_token,true));
 
         if ($accessToken->hasExpired()) {
             $accessToken = $this->getOAuth2()->refreshAccessToken($accessToken);
 
-            $user->xero_access_token = $accessToken;
+            $user->xero_access_token = json_encode($accessToken);
+            dd(json_encode($accessToken));
             $user->save();
+            $successMessage="New Access Token generated";
+            return $this->successResponse($user, $successMessage, 200);
         }
+        $successMessage="Token Didn't expired";
+        return $this->successResponse($user, $successMessage, 200);
     }
     public function testapi()
     {
